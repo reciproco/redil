@@ -20,5 +20,10 @@ class Document(db.Model):
     content = db.Column(db.UnicodeText)
     search_vector = db.Column(TSVectorType('name', 'content'))
 
+    def __init__(self,name,url,content):
+        self.name = name
+        self.url = url
+        self.content = content
+
     def __repr__(self):
         return '<id {}>'.format(self.id)

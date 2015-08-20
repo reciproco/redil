@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from flask import Flask, render_template, request, make_response, jsonify
 from flask.ext.sqlalchemy import SQLAlchemy
 

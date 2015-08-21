@@ -29,16 +29,16 @@ class Document(db.Model):
         self.content_hash = content_hash
         self.content = content
 
-    @property
-    def serialize(self):
-        return {
-            'id'            : self.id,
-            'name'          : self.name,
-            'url'           : self.url,
-            'content'       : self.content,
-            'content_hash'  : self.content_hash,
-            'search_vector' : self.search_vector
-        }
+#    @property
+#    def serialize(self):
+#        return {
+#            'id'            : self.id,
+#            'name'          : self.name,
+#            'url'           : self.url,
+#            'content'       : self.content,
+#            'content_hash'  : self.content_hash,
+#            'search_vector' : self.search_vector
+#        }
  
     def __repr__(self):
         return '<id {} name {}>'.format(self.id, self.name)

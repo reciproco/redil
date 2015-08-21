@@ -10,7 +10,7 @@ print(os.environ['APP_SETTINGS'])
 db = SQLAlchemy(app)
 
 from app.api.v1 import mod_apiv1
-app.register_blueprint(mod_apiv1)
+#app.register_blueprint(mod_apiv1)
 
 @app.errorhandler(404)
 def not_found(error):

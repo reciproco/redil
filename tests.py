@@ -50,7 +50,6 @@ class RedilTestCase(unittest.TestCase):
         headers.append(('Content-Length', json_data_length))
         response = self.app.put('/api/v1/documents', headers=headers, data=json_data)
         json_response = json.loads(response.data.decode('utf-8'))
-        print(json_response['document']['id'])
         self.assertEqual(response.status_code,201)
         self.assertIn('id', json_response['document'])
         self.assertIn('name', json_response['document'])

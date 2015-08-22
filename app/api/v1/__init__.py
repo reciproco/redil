@@ -16,7 +16,6 @@ document_fields = {
     'url': fields.String,
     'content': fields.String,
     'content_hash': fields.String,
-    'search_vector': fields.String,
     'uri': fields.Url('.document')
 }
 
@@ -26,21 +25,20 @@ documents_fields = {
     'url': fields.String,
     'content': fields.String,
     'content_hash': fields.String,
-    'search_vector': fields.String,
     'uri': fields.Url('.documents')
 }
 
-search_fields = {
-    'id':  fields.Integer,
-    'name': fields.String,
-    'url': fields.String,
-    'content': fields.String,
-    'content_hash': fields.String,
-    'search_vector': fields.String,
-    'ts_name': fields.String,
-    'ts_content': fields.String,
-    'uri': fields.Url('.documents')
-}
+def highlight(doc, search):
+    content = ''
+    lines = doc.content.split('\n')
+    for line in lines:
+        if search in line:
+            content = content + line.replace(search, '<b>' + search + '<\b>')
+
+    doc.content = content
+    doc.name = doc.name.replace(search, '<b>' + search + '<\b>')
+
+    return doc
 
 class DocumentAPI(Resource):
     def __init__(self):
@@ -101,19 +99,12 @@ class DocumentListAPI(Resource):
 
 
         if search:
-            if len(search) < 4:
+            if len(search) < 3:
                 return { 'documents' : []}
 
-            search = '{}:*'.format(request.args.get('search_string'))
-            query = Document.query.add_columns(func.ts_headline(Document.content,func.to_tsquery(search)).label('ts_content'))
-            query = query.add_columns(func.ts_headline(Document.name,func.to_tsquery(search), 'HighlightAll=TRUE').label('ts_name'))
-            docs = query.search(search).all()
-       
-            for doc in docs:
-                doc[0].ts_content = doc[1]
-                doc[0].ts_name = doc[2]
- 
-            return { 'documents' : [marshal(doc[0], search_fields) for doc in docs]}
+            docs = Document.query.filter(Document.name.like('%{}%'.format(search)) | Document.content.like('%{}%'.format(search))).all()       
+
+            return { 'documents' : [marshal(highlight(doc, search), documents_fields) for doc in docs]}
             
         docs = Document.query.all()
 
@@ -130,22 +121,3 @@ class DocumentListAPI(Resource):
 api.add_resource(DocumentAPI, '/documents/<int:id>', endpoint = 'document')
 api.add_resource(DocumentListAPI, '/documents', endpoint = 'documents')
 
-#@mod_apiv1.route('/search', methods=['POST'])
-#def search():
-#
-#    if not request.json or not 'search_string' in request.json:
-#        abort(400)
-#
-#    results = []
-#
-#    q = Document.query.add_column(func.ts_headline(Document.content,func.plainto_tsquery(request.json['search_string'])))
-#    q = q.add_column(func.ts_headline(Document.name,func.plainto_tsquery(request.json['search_string']), 'HighlightAll=TRUE'))
-#    rows = q.search(request.json['search_string']).all()
-#    for row in rows:
-#        results.append({'id': row[0].id, 'name': row[0].name,
-#                        'url': row[0].url, 'content': row[0].content,
-#                        'search_vector': row[0].search_vector,
-#                        'ts_content': row[1],
-#                        'ts_name': row[2]})
-#
-#    return jsonify({'url' : request.path , 'data': results})

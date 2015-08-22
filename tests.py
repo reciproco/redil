@@ -57,7 +57,6 @@ class RedilTestCase(unittest.TestCase):
         self.assertIn('uri', json_response['document'])
         self.assertIn('content', json_response['document'])
         self.assertIn('content_hash', json_response['document'])
-        self.assertIn('search_vector', json_response['document'])
         db.session.flush()
 
     def test_api_delete_document(self):

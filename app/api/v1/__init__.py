@@ -3,7 +3,6 @@ from flask import Flask, render_template, request, jsonify, Blueprint,  make_res
 from flask.ext.sqlalchemy import SQLAlchemy
 from sqlalchemy import func
 import hashlib
-from app import app
 from app import db
 from app.api.v1.models import Document
 from flask.ext.restful import Api, Resource, reqparse, fields, marshal, abort
@@ -130,7 +129,6 @@ class DocumentListAPI(Resource):
 
 api.add_resource(DocumentAPI, '/documents/<int:id>', endpoint = 'document')
 api.add_resource(DocumentListAPI, '/documents', endpoint = 'documents')
-app.register_blueprint(mod_apiv1)
 
 #@mod_apiv1.route('/search', methods=['POST'])
 #def search():

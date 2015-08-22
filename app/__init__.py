@@ -1,29 +1,25 @@
 # -*- coding: utf-8 -*-
-from flask import Flask, render_template, request, make_response, jsonify
+from flask import Flask, make_response, jsonify
 from flask.ext.sqlalchemy import SQLAlchemy
-
 import os
 
-app = Flask(__name__)
-app.config.from_object(os.environ['APP_SETTINGS'])
-print(os.environ['APP_SETTINGS'])
-db = SQLAlchemy(app)
+db = SQLAlchemy()
 
-from app.api.v1 import mod_apiv1
-#app.register_blueprint(mod_apiv1)
+def create_app():
+    app = Flask(__name__)
+    app.config.from_object(os.environ['APP_SETTINGS'])
+    print(os.environ['APP_SETTINGS'])
+    db.init_app(app)
 
-@app.errorhandler(404)
+    from app.api.v1 import mod_apiv1
+    app.register_blueprint(mod_apiv1)
+
+    from app.web import mod_web
+    app.register_blueprint(mod_web)
+
+    app.register_error_handler(404,not_found)
+    
+    return app
+
 def not_found(error):
     return make_response(jsonify({'error': 'Not found'}), 404)
-
-@app.errorhandler(405)
-def method_not_allowed(error):
-    return make_response(jsonify({'error':'method not allowed'}),405)
-
-
-@app.route('/', methods=['GET', 'POST'])
-def index():
-    return render_template('index.html')
-
-if __name__ == '__main__':
-    app.run()

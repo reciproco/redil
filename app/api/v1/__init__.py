@@ -100,14 +100,16 @@ class DocumentListAPI(Resource):
 
         search = request.args.get('search_string')
 
+
         if search:
+            if len(search) < 4:
+                return { 'documents' : []}
+
+            search = '{}:*'.format(request.args.get('search_string'))
             query = Document.query.add_column(func.ts_headline(Document.content,func.to_tsquery(search)).label('ts_content'))
             query = query.add_column(func.ts_headline(Document.name,func.to_tsquery(search), 'HighlightAll=TRUE').label('ts_name'))
-
-            print(query)
             docs = query.search(search).all()
        
-            print('DOCS: {}'.format(docs)) 
             for doc in docs:
                 doc[0].ts_content = doc[1]
                 doc[0].ts_name = doc[2]

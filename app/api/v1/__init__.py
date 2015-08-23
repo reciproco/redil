@@ -5,6 +5,7 @@ from sqlalchemy import func
 import hashlib
 from app import db
 from app.api.v1.models import Document
+import shlex
 from flask.ext.restful import Api, Resource, reqparse, fields, marshal, abort
 
 mod_apiv1 = Blueprint('apiv1',__name__, url_prefix='/api/v1')
@@ -28,15 +29,19 @@ documents_fields = {
     'uri': fields.Url('.documents')
 }
 
-def highlight(doc, search):
+def highlight(doc, searchs):
     content = ''
     lines = doc.content.split('\n')
     for line in lines:
-        if search in line:
-            content = content + line.replace(search, '<b>' + search + '<\b>')
+        for search in searchs:
+            if search in line:
+                line = line.replace(search, '<b>' + search + '<\b>')
+        content = content + line
 
     doc.content = content
-    doc.name = doc.name.replace(search, '<b>' + search + '<\b>')
+
+    for search in searchs:
+        doc.name = doc.name.replace(search, '<b>' + search + '<\b>')
 
     return doc
 
@@ -81,6 +86,17 @@ class DocumentAPI(Resource):
 
         return {'result': True }
 
+def build_search_condition(search):
+    result = ''
+    for condition in search:
+        condition = condition.replace('"','')
+        condition = condition.replace("'","")
+        result = result + "(Document.name.like('%{}%') | Document.content.like('%{}%')) & ".format(condition,condition)
+
+    return result[:-2]
+
+    
+
 class DocumentListAPI(Resource):
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
@@ -95,16 +111,12 @@ class DocumentListAPI(Resource):
 
     def get(self):
 
-        search = request.args.get('search_string')
+        searchs = shlex.split(request.args.get('search_string'))
 
+        if searchs:
+            docs = Document.query.filter(eval(build_search_condition(searchs))).all()       
 
-        if search:
-            if len(search) < 3:
-                return { 'documents' : []}
-
-            docs = Document.query.filter(Document.name.like('%{}%'.format(search)) | Document.content.like('%{}%'.format(search))).all()       
-
-            return { 'documents' : [marshal(highlight(doc, search), documents_fields) for doc in docs]}
+            return { 'documents' : [marshal(highlight(doc, searchs), documents_fields) for doc in docs]}
             
         docs = Document.query.all()
 

@@ -25,22 +25,21 @@
       </form>
     </div>
     <div class="col-sm-5 col-sm-offset-1">
-      <h2>Frequencies</h2>
       <br>
       <div id="results">
         
        <table class="table table-striped">
          <thead>
           <tr>
-          <th>Word</th>
-          <th>Count</th>
+          <th>File name</th>
+          <th>Content</th>
           </tr>
           </thead>
           <tbody>
           {% raw %}
-             <tr data-ng-repeat="data in results">
-               <td>{{data.name}}</td>
-               <td>{{data.url}}</td>
+             <tr data-ng:repeat="data in results">
+               <td data-ng-bind-html="data.name | to_trusted"></td>
+               <td data-ng-bind-html="data.content | to_trusted"></td>
              </tr>
            {% endraw %}
          </tbody>

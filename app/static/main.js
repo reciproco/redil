@@ -1,7 +1,13 @@
 (function () {
   'use strict';
 
-  angular.module('RedilApp', []).controller('RedilController', ['$scope', '$log', '$http', function($scope, $log, $http) {
+  angular.module('RedilApp', [])
+  .filter('to_trusted', ['$sce', function($sce){
+        return function(text) {
+            return $sce.trustAsHtml(text);
+        };
+  }])
+  .controller('RedilController', ['$scope','$log', '$http', function($scope, $log, $http) {
     $scope.getResults = function() {
       $log.log("test");
       // get the URL from the input

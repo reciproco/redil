@@ -36,7 +36,7 @@ def highlight(doc, searchs):
         for search in searchs:
             if search in line:
                 line = line.replace(search, '<b>' + search + '</b>')
-        content = content + line
+                content = content + line
 
     doc.content = content
 

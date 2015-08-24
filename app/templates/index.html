@@ -17,22 +17,16 @@
     <div class="col-sm-5 col-sm-offset-1">
       <h1>Redil web</h1>
       <br>
-      <form role="form" data-ng-submit="start()">
+      <form role="form" data-ng-submit="searchDocuments()">
         <div class="form-group">
-          <input type="text" name="url" class="form-control" id="url-box" placeholder="Enter URL..." style="max-width: 300px;" data-ng-change="start()" data-ng-model="input_url" required>
+          <input type="text" name="url" class="form-control" id="url-box" placeholder="Enter the search words" style="max-width: 300px;" data-ng-model="input_url" required>
         </div>
-        <button type="submit" class="btn btn-default">Submit</button>
+        <button type="submit" class="btn btn-default">Go</button>
       </form>
     </div>
     <div class="col-sm-5 col-sm-offset-1">
       <br>
       <div id="results">
-    <ul>
-        <li ng-repeat="request in requests">
-            <button ng-click="cancel(request)">Cancel</button>
-        </li>
-    </ul>
-        
        <table class="table table-striped">
          <thead>
           <tr>
@@ -42,7 +36,6 @@
           </thead>
           <tbody>
           {% raw %}
- 
              <tr data-ng:repeat="data in results">
                <td data-ng-bind-html="data.name | to_trusted"></td>
                <td data-ng-bind-html="data.content | to_trusted"></td>

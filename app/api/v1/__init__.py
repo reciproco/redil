@@ -31,17 +31,23 @@ documents_fields = {
 
 def highlight(doc, searchs):
     content = ''
+    changed = False
+
     lines = doc.content.split('\n')
     for line in lines:
         for search in searchs:
             if search in line:
                 line = line.replace(search, '<b>' + search + '</b>')
-                content = content + line + '\n'
+                changed = True
+        if changed:
+            content = content + line + '\n'
+            changed = False
 
-    doc.content = content[:-1]
+    doc.content = content
 
     for search in searchs:
-        doc.name = doc.name.replace(search, '<b>' + search + '</b>')
+        if search in doc.name:
+            doc.name = doc.name.replace(search, '<b>' + search + '</b>')
 
     return doc
 

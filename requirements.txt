@@ -7,15 +7,12 @@ Jinja2==2.8
 Mako==1.0.1
 MarkupSafe==0.23
 SQLAlchemy==1.0.8
-SQLAlchemy-Searchable==0.9.3
-SQLAlchemy-Utils==0.30.17
 Unidecode==0.04.18
 Werkzeug==0.10.4
 alembic==0.8.0
 aniso8601==1.0.0
 coverage==3.7.1
 decorator==4.0.2
-fake-factory==0.5.2
 gunicorn==19.3.0
 itsdangerous==0.24
 psycopg2==2.6.1

@@ -35,13 +35,13 @@ def highlight(doc, searchs):
     for line in lines:
         for search in searchs:
             if search in line:
-                line = line.replace(search, '<b>' + search + '<\b>')
+                line = line.replace(search, '<b>' + search + '</b>')
         content = content + line
 
     doc.content = content
 
     for search in searchs:
-        doc.name = doc.name.replace(search, '<b>' + search + '<\b>')
+        doc.name = doc.name.replace(search, '<b>' + search + '</b>')
 
     return doc
 

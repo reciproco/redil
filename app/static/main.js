@@ -1,76 +1,40 @@
 (function () {
-  'use strict';
+    'use strict';
 
-  var app =   angular.module('RedilApp', []);
+    var app =   angular.module('RedilApp', []);
 
 
-  app.filter('to_trusted', ['$sce', function($sce){
+    app.filter('to_trusted', ['$sce', function($sce){
         return function(text) {
             return $sce.trustAsHtml(text);
         };
-  }]);
+    }]);
 
-  app.factory("documents", function($http, $q) {
+    app.factory("documentsFactory", ['$http', function($http) {
+        var documentFactory = {};
 
-      var getResults = function(query){
-          var canceller = $q.defer();
+        documentFactory.searchDocuments = function(query){
+            return $http.get('/api/v1/documents', { params: { 'search_string' : query }});
+        };
 
-          var cancel = function(reason){
-              canceller.resolve(reason);
-          };
+        return documentFactory;
+    }]);
 
-          var promise = $http.get('/api/v1/documents', { timeout: canceller.promise, params: { 'search_string' : query }})
-                             .then(function(response) {
-                                 console.log(response.data)
-                                 return response.data;
-                             });
+    app.controller('RedilController',['$scope', '$log', 'documentsFactory', function($scope, $log, documentsFactory) {
+        $scope.results = []
 
-          return {
-              promise: promise,
-              cancel: cancel
-          };
-      };
+        $scope.searchDocuments = function() {
+            console.log('en searchdocuments');
 
-      return { getResults: getResults };
+            documentsFactory.searchDocuments($scope.input_url)
+               .success(function (response) {
+                   console.log(response);
+                   $scope.results = response.documents;
+               })
+               .error(function(error) {
+                   console.log(error);
 
-  });
-
-  app.controller('RedilController', function($scope, $log, documents) {
-
-    $scope.requests = []
-    $scope.results = []
-
-    $scope.start = function(){
-
-      var reqlen = $scope.requests.lenght;
-      for (var i = 0; i < reqlen; i++) {
-          requests[i].cancel('cancelandoooo');
-      }
-      $scope.requests = []
-      
-
-      var request = documents.getResults($scope.input_url);
-      console.log(request);
-      console.log(request.promise);
-      $scope.requests.push(request);
-      request.promise.then(function(data){
-        console.log('orimise');
-        console.log(data);
-        $scope.results = data.documents;
-        clearRequest(request);
-      }, function(reason){
-        console.log(reason);
-      });
-    };
-
-    $scope.cancel = function(request) {
-        request.cancel('User cancelled');
-        clearRequest(request);
-    };
-
-    var clearRequest = function(request){
-        $scope.requests.splice($scope.requests.indexOf(request),1);
-    };
- });
+               });
+        };
+    }]);
 }());
-

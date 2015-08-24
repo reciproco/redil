@@ -26,7 +26,6 @@ def create_app():
 #    app.register_error_handler(404,not_found)
 #    app.register_error_handler(400,bad_request)
 
-        
     return app
 
 #def bad_request(error):

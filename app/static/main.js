@@ -26,9 +26,20 @@
         $scope.searchDocuments = function() {
             console.log('en searchdocuments');
 
+            var parsedquery = '';
+
             if (typeof $scope.input_url != 'undefined') {
-              if ($scope.input_url.length > 2) {
-                documentsFactory.searchDocuments($scope.input_url)
+              var query = $scope.input_url.match(/("[^"]+"|[^"\s]+)/g);
+              console.log(query);
+              var ql = query.length;
+              for (var i = 0; i < ql; i++) {
+                if(query[i].length > 2) {
+                  parsedquery = parsedquery + query[i] + ' ';
+                }
+              }
+              if (parsedquery.length > 2) {
+                console.log(parsedquery);
+                documentsFactory.searchDocuments(parsedquery)
                                 .success(function (response) {
                                     console.log(response);
                                     $scope.results = response.documents;

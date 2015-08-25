@@ -117,9 +117,8 @@ class DocumentListAPI(Resource):
 
     def get(self):
 
-        searchs = shlex.split(request.args.get('search_string'))
-
-        if searchs:
+        if 'search_string' in request.args:
+            searchs = shlex.split(request.args.get('search_string'))
             docs = Document.query.filter(eval(build_search_condition(searchs))).all()       
 
             return { 'documents' : [marshal(highlight(doc, searchs), documents_fields) for doc in docs]}

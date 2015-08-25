@@ -16,7 +16,7 @@ def error_handler(error):
         code = 500
         name = 'Internal Server Error'
 
-    return make_response(jsonify({'error' : code, 'name' : name, 'message': description}))
+    return make_response(jsonify({'error' : code, 'name' : name, 'message': description})), code
 
 def init_errors(app):
     for exception in default_exceptions:

@@ -26,15 +26,23 @@
         $scope.searchDocuments = function() {
             console.log('en searchdocuments');
 
-            documentsFactory.searchDocuments($scope.input_url)
-               .success(function (response) {
-                   console.log(response);
-                   $scope.results = response.documents;
-               })
-               .error(function(error) {
-                   console.log(error);
+            if (typeof $scope.input_url != 'undefined') {
+              if ($scope.input_url.length > 2) {
+                documentsFactory.searchDocuments($scope.input_url)
+                                .success(function (response) {
+                                    console.log(response);
+                                    $scope.results = response.documents;
+                })
+                                .error(function(error) {
+                                    console.log(error);
 
                });
+              } else {
+                $scope.results = []
+              }
+            } else {
+              $scope.results = []
+            }
         };
     }]);
 }());

@@ -2,52 +2,60 @@
 <html data-ng-app="RedilApp">
   <head>
     <title>REDIL</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-      .container {
-        max-width: 1000px;
-      }
-    </style>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.13/angular.min.js"></script>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/0.10.0/angular-material.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Angular Material Dependencies -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-animate.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-aria.min.js"></script>
+    <!-- Angular Material Javascript now available via Google CDN; version 0.10 used here -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angular_material/0.10.0/angular-material.min.js"></script>
+
     <script src="{{ url_for('static', filename='main.js') }}"></script>
   </head>
-  <body data-ng-controller="RedilController">
-    <div class="container">
-  <div class="row">
-    <div class="col-sm-5 col-sm-offset-1">
-      <h1>Redil web</h1>
-      <br>
-      <form role="form" data-ng-submit="searchDocuments()">
-        <div class="form-group">
-          <input type="text" name="url" class="form-control" id="url-box" placeholder="Enter the search words" style="max-width: 300px;" data-ng-model-options="{ debounce : 400 }" data-ng-change="searchDocuments()" data-ng-model="input_url" required>
-        </div>
-        <button type="submit" class="btn btn-default">Go</button>
-      </form>
-    </div>
-    <div class="col-sm-5 col-sm-offset-1">
-      <br>
-      <div id="results">
-       <table class="table table-striped">
-         <thead>
-          <tr>
-          <th>File name</th>
-          <th>Content</th>
-          </tr>
-          </thead>
-          <tbody>
-          {% raw %}
-             <tr data-ng:repeat="data in results">
-               <td data-ng-bind-html="data.name | to_trusted"></td>
-               <td data-ng-bind-html="data.content | to_trusted"></td>
-             </tr>
-           {% endraw %}
-         </tbody>
-       </table>
-        
+  <body>
+  <!-- The top toolbar -->
+    <md-toolbar>
+      <div class="md-toolbar-tools">
+          <md-button class="md-icon-button" aria-label="Settings">
+             <md-icon class="material-icons">cloud_queue</md-icon>
+          </md-button>
+        <h2>
+          <span class="md-title">Redil</span>
+        </h2>
       </div>
-    </div>
+    </md-toolbar>
+    <div layout="row">
+      <div flex="20"></div>
+        <md-card flex data-ng-controller="RedilController">
+          <md-card-content>
+            <md-content>
+              <form role="form" data-ng-submit="searchDocuments()">
+                 <md-input-container flex="">
+                   <label>Search words</label>
+                   <input data-model-options="{ debounce : 400 }" data-ng-change="searchDocuments()" data-ng-model="input_url" required>
+                 </md-input-container>
+              </form>
+            </md-content>
+            <md-content ng-show="results">
+              <md-list>
+                <md-subheader class="md-no-sticky">Results</md-subheader>
+                <md-list-item class="md-2-line" data-ng-repeat="data in results">
+                  <div class="md-list-item-text">
+                  {% raw %}
+                    <h3 data-ng-bind-html="data.name | to_trusted"></h3> 
+                    <p data-ng-bind-html="data.content | to_trusted"></p>
+                  {% endraw %}
+                  </div>
+                  <md-divider></md-divider>
+                </md-list-item>
+              </md-list>
+            </md-content>
+          </md-card-content>
+        </md-card>
+      <div flex="20"></div></div>
+    </md-content>
   </div>
-</div>
-  </body>
+ </body>
 </html>
 

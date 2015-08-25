@@ -1,7 +1,7 @@
 (function () {
     'use strict';
 
-    var app =   angular.module('RedilApp', []);
+    var app =   angular.module('RedilApp', ['ngMaterial']);
 
 
     app.filter('to_trusted', ['$sce', function($sce){

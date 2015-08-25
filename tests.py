@@ -23,9 +23,10 @@ class RedilTestCase(unittest.TestCase):
         response = self.app.get('/urlinexistente')
         json_response = json.loads(response.data.decode('utf-8'))
         self.assertIn('error',json_response)
-        self.assertEqual('Not found',json_response['error'])
+        self.assertEqual(404,json_response['error'])
         self.assertEqual(response.status_code,404)
 
+#    @unittest.skip("testing skipping")
     def test_api_get_all_documents(self):
         response = self.app.get('/api/v1/documents')
         json_response = json.loads(response.data.decode('utf-8'))

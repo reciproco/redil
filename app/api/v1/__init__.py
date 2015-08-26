@@ -45,6 +45,9 @@ def highlight(doc, searchs):
             content = content + '[...]' + contexts[0][-70:]
             contexts.pop(0)
             for context in contexts:
+                for search in searchs:
+                    if search == context[:len(search)] and content[-6:] == '[...]\n':
+                        content = content[:-6]
                 content = content + context[:70] + '[...]\n'
             for search in searchs:
                 content = content.replace(search, '<mark>' + search + '</mark>' )

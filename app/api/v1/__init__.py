@@ -42,10 +42,10 @@ def highlight(doc, searchs):
                 changed = True
         if changed:
             contexts = line.split('|rv|')
-            content = content + contexts[0][-80:]
+            content = content + '[...]' + contexts[0][-70:]
             contexts.pop(0)
             for context in contexts:
-                content = content + context[:80] + '\n'
+                content = content + context[:70] + '[...]\n'
             for search in searchs:
                 content = content.replace(search, '<mark>' + search + '</mark>' )
             changed = False

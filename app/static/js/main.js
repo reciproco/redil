@@ -22,9 +22,11 @@
 
     app.controller('RedilController',['$scope', '$log', 'documentsFactory', function($scope, $log, documentsFactory) {
         $scope.results = []
+        $scope.searching = false;
 
         $scope.searchDocuments = function() {
             console.log('en searchdocuments');
+            $scope.searching = true;
 
             var parsedquery = '';
 
@@ -43,15 +45,19 @@
                                 .success(function (response) {
                                     console.log(response);
                                     $scope.results = response.documents;
+                                    $scope.searching = false;
                 })
                                 .error(function(error) {
                                     console.log(error);
+                                    $scope.searching = false;
 
                });
               } else {
+                $scope.searching = false;
                 $scope.results = []
               }
             } else {
+              $scope.searching = false;
               $scope.results = []
             }
         };

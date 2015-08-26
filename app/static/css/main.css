@@ -1,0 +1,4 @@
+.redilSearchDocuments md-input-container:not(.md-input-invalid) > md-icon.search {
+  color: dodgerBlue; }
+.redilSearchDocuments md-input-container.md-input-invalid > md-icon.search {
+  color: red; }

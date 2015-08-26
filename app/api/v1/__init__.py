@@ -47,14 +47,14 @@ def highlight(doc, searchs):
             for context in contexts:
                 content = content + context[:20] + ' ...\n'
             for search in searchs:
-                content = content.replace(search, '<b>' + search + '</b>' )
+                content = content.replace(search, '<mark>' + search + '</mark>' )
             changed = False
 
     doc.content = content
 
     for search in searchs:
         if search in doc.name:
-            doc.name = doc.name.replace(search, '<b>' + search + '</b>')
+            doc.name = doc.name.replace(search, '<mark>' + search + '</mark>')
 
     return doc
 

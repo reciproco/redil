@@ -29,14 +29,14 @@
       </div>
     </md-toolbar>
     <div layout="row">
-      <div flex="20"></div>
+      <div flex="5"></div>
         <md-card flex data-ng-controller="RedilController">
           <md-card-content>
             <md-content>
               <form role="form" data-ng-submit="searchDocuments()">
                  <md-input-container flex="">
                    <label>Search words</label>
-                   <input data-model-options="{ debounce : 400 }" data-ng-change="searchDocuments()" data-ng-model="input_url" required>
+                   <input data-model-options="{ debounce : 600 }" data-ng-change="searchDocuments()" data-ng-model="input_url" required>
                  </md-input-container>
               </form>
             </md-content>
@@ -56,7 +56,7 @@
             </md-content>
           </md-card-content>
         </md-card>
-      <div flex="20"></div></div>
+      <div flex="5"></div></div>
     </md-content>
   </div>
  </body>

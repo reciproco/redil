@@ -38,10 +38,16 @@ def highlight(doc, searchs):
     for line in lines:
         for search in searchs:
             if search in line:
-                line = line.replace(search, '<b>' + search + '</b>')
+                line = line.replace(search, '|rv|' + search )
                 changed = True
         if changed:
-            content = content + line + '\n'
+            contexts = line.split('|rv|')
+            content = content + '... ' + contexts[0][-20:]
+            contexts.pop(0)
+            for context in contexts:
+                content = content + context[:20] + ' ...\n'
+            for search in searchs:
+                content = content.replace(search, '<b>' + search + '</b>' )
             changed = False
 
     doc.content = content

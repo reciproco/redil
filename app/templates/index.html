@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width">
     <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/0.10.0/angular-material.min.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
     <!-- Angular Material Dependencies -->
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-animate.min.js"></script>
@@ -12,9 +13,7 @@
     <!-- Angular Material Javascript now available via Google CDN; version 0.10 used here -->
     <script src="https://ajax.googleapis.com/ajax/libs/angular_material/0.10.0/angular-material.min.js"></script>
 
-    <script src="{{ url_for('static', filename='main.js') }}"></script>
-
- 
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
   </head>
   <body>
   <!-- The top toolbar -->
@@ -28,15 +27,16 @@
         </h2>
       </div>
     </md-toolbar>
-    <div layout="row">
+    <div layout="row" layout-padding class="redilSearchDocuments">
       <div flex="10"></div>
-        <md-card flex data-ng-controller="RedilController">
+       <div flex>
+        <md-card data-ng-controller="RedilController">
           <md-card-content>
-            <md-content>
+            <md-content class="md-padding">
               <form role="form" data-ng-submit="searchDocuments()">
-                 <md-input-container flex="">
-                   <label>Search words</label>
-                   <input data-ng-model-options="{ debounce : 400 }" data-ng-change="searchDocuments()" data-ng-model="input_url" required>
+                 <md-input-container>
+                   <md-icon md-svg-src="{{ url_for('static', filename='img/icons/ic_search_24px.svg') }}" class="search">search</md-icon>
+                   <input data-ng-model-options="{ debounce : 400 }" data-ng-change="searchDocuments()" data-ng-model="input_url" ng-required="true" placeholder=" Search words">
                  </md-input-container>
               </form>
             </md-content>
@@ -52,12 +52,12 @@
                   </div>
                   <md-divider></md-divider>
                 </md-list-item>
-              </md-list>
+              </md-list> 
             </md-content>
-          </md-card-content>
-        </md-card>
-      <div flex="10"></div></div>
-    </md-content>
+          </md-card-content> 
+        </md-card> 
+        </div>
+      <div flex="10"></div>
   </div>
  </body>
 </html>

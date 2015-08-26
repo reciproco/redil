@@ -3,6 +3,7 @@ from flask import Flask, render_template, request, jsonify, Blueprint,  make_res
 from flask.ext.sqlalchemy import SQLAlchemy
 from sqlalchemy import func
 import hashlib
+from unidecode import unidecode
 from app import db
 from app.api.v1.models import Document
 import shlex
@@ -118,7 +119,9 @@ class DocumentListAPI(Resource):
     def get(self):
 
         if 'search_string' in request.args:
-            searchs = shlex.split(request.args.get('search_string'))
+            normalize = unidecode(request.args.get('search_string')).casefold()
+            print(normalize)
+            searchs = shlex.split(normalize)
             docs = Document.query.filter(eval(build_search_condition(searchs))).all()       
 
             return { 'documents' : [marshal(highlight(doc, searchs), documents_fields) for doc in docs]}

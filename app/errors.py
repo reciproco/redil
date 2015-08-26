@@ -3,7 +3,7 @@ from werkzeug.exceptions import default_exceptions, HTTPException
 
 
 def error_handler(error):
-    msg = "Request resulted in {}".format(error)
+    msg = "Request resulted in: {}".format(error)
     current_app.logger.warning(msg, exc_info=error)
 
     if isinstance(error, HTTPException):
@@ -11,6 +11,8 @@ def error_handler(error):
         code = error.code
         name = error.name
     else:
+        msg = "Request resulted in: {}".format(error)
+        current_app.logger.error(msg, exc_info=error)
         description = ("We encountered an error "
                        "while trying to fulfill your request")
         code = 500

@@ -2,3 +2,5 @@
   color: dodgerBlue; }
 .redilSearchDocuments md-input-container.md-input-invalid > md-icon.search {
   color: red; }
+
+#file-input { display: none; }

@@ -33,25 +33,26 @@ documents_fields = {
 def highlight(doc, searchs):
     content = ''
     changed = False
+    contexts = []
 
-    lines = doc.content.split('\n')
-    for line in lines:
-        for search in searchs:
-            if search in line:
-                line = line.replace(search, '|rv|' + search )
-                changed = True
-        if changed:
-            contexts = line.split('|rv|')
-            content = content + '[...]' + contexts[0][-70:]
-            contexts.pop(0)
-            for context in contexts:
-                for search in searchs:
-                    if search == context[:len(search)] and content[-6:] == '[...]\n':
-                        content = content[:-6]
-                content = content + context[:70] + '[...]\n'
-            for search in searchs:
-                content = content.replace(search, '<mark>' + search + '</mark>' )
-            changed = False
+    raw_content = doc.content
+    for search in searchs:
+        if search in raw_content:
+            raw_content = raw_content.replace(search, '|rv|<mark>' + search + '</mark>' )
+            changed = True
+    if changed:
+        contexts = raw_content.split('|rv|')
+        content = content + '[...' + contexts[0][-70:]
+        contexts.pop(0)
+        for context in contexts[:-1]:
+            if len(context) > 83: #70 of context and 6+7 of markup length
+                content = content + context[:70] + '[..]'
+            else:
+                content = content + context
+        content = content + contexts[-1][:70] + '...]'
+        changed = False
+    else:
+        content = ''
 
     doc.content = content
 

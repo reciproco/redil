@@ -33,6 +33,7 @@ documents_fields = {
 def highlight(doc, searchs):
     content = ''
     changed = False
+    contexts = []
 
     raw_content = doc.content
     for search in searchs:
@@ -50,6 +51,8 @@ def highlight(doc, searchs):
                 content = content + context
         content = content + contexts[-1][:70] + '...]'
         changed = False
+    else:
+        content = ''
 
     doc.content = content
 

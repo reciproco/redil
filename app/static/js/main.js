@@ -45,7 +45,7 @@
                                 .success(function (response) {
                                     console.log(response);
                                     for (var i = 0; i < response.documents.length; i++) {
-                                        response.documents[i].content = response.documents[i].content.replace(/\n/g, '<br>')
+                                        response.documents[i].content = response.documents[i].content.replace(/\.\.\.\]/g, '...]<br>')
                                     }
                                     $scope.results = response.documents;
                                     $scope.searching = false;

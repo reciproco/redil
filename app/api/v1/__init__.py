@@ -34,23 +34,22 @@ def highlight(doc, searchs):
     content = ''
     changed = False
 
-    lines = doc.content.split('\n')
-    for line in lines:
-        for search in searchs:
-            if search in line:
-                line = line.replace(search, '|rv|<mark>' + search + '</mark>' )
-                changed = True
-        if changed:
-            contexts = line.split('|rv|')
-            content = content + '[...' + contexts[0][-70:]
-            contexts.pop(0)
-            for context in contexts[:-1]:
-                if len(context) > 70:
-                    content = content + context[:70] + '[..]'
-                else:
-                    content = content + context
-            content = content + contexts[-1] + '...]'
-            changed = False
+    raw_content = doc.content
+    for search in searchs:
+        if search in raw_content:
+            raw_content = raw_content.replace(search, '|rv|<mark>' + search + '</mark>' )
+            changed = True
+    if changed:
+        contexts = raw_content.split('|rv|')
+        content = content + '[...' + contexts[0][-70:]
+        contexts.pop(0)
+        for context in contexts[:-1]:
+            if len(context) > 83: #70 of context and 6+7 of markup length
+                content = content + context[:70] + '[..]'
+            else:
+                content = content + context
+        content = content + contexts[-1] + '...]'
+        changed = False
 
     doc.content = content
 

@@ -18,6 +18,7 @@ def method_not_allowed(error):
 def index():
     print('PRUEBA GITHOOK')
     print('PRUEBA GITHOOK')
+    print('PRUEBA GITHOOK')
     return render_template('index.html')
 
 @mod_web.route('upload', methods=['GET', 'POST'])

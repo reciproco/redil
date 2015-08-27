@@ -11,8 +11,4 @@ echo "starting $APP_NAME in $APP_DIR as `whoami`"
 exec $APP_DIR/venv/bin/gunicorn wsgi:app \
   --name $APP_NAME \
   --workers 2 \
-  --bind localhost:$APP_PORT \
-  --logfile=-
-
-
-
+  --bind localhost:$APP_PORT 

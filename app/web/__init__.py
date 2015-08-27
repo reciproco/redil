@@ -26,8 +26,8 @@ def upload():
         b = io.BytesIO()
 
         print(request.form)
-        print(dir(request.files['file1']))
-        b.write(request.files['file1'].stream.read())
+        print(dir(request.files['file0']))
+        b.write(request.files['file0'].stream.read())
         b.seek(0)
         
         view = b.read(100)

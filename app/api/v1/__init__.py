@@ -48,7 +48,7 @@ def highlight(doc, searchs):
                 content = content + context[:70] + '[..]'
             else:
                 content = content + context
-        content = content + contexts[-1] + '...]'
+        content = content + contexts[-1][:70] + '...]'
         changed = False
 
     doc.content = content

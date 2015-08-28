@@ -174,6 +174,6 @@ SCAPED_TEXT=$(json_escape "${TEXT}")
 echo "{ \"text\": ${SCAPED_TEXT}, \"mimetype\": \"${MIMETYPE}\", \"utility\": \"${TOOL}\", \"pages\": ${PAGES} }"
 
 # delete the tmp files (and return nothing)
-#rm -fr $TMP &> /dev/null;
+rm -fr $TMP &> /dev/null;
 
 exit 0

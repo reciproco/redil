@@ -118,8 +118,18 @@ elif [ $MIMETYPE == 'application/pdf' ]; then
 elif [[ $MIMETYPE == image/* ]]; then
 
   mkdir "$TMP"
-  tesseract -l spa "$FILE" "${TMP}/result.txt" &> /dev/null
-#  TEXT=`iconv -c -f utf-8 -t ascii "${TMP}/result.txt"`
+  convert  -resample $DPI -depth 8 -alpha Off "$FILE" "${TMP}/page_%d.tif"
+  dir="${TMP}/page*.tif" 
+  PAGES=-1
+  for f in $dir ; do
+    echo ${f}
+    PAGES=$(( $PAGES + 1 ))
+    if [ $PAGES -le $MAXPAGES ]; then
+      tesseract -l spa "${f}" "$f" &> /dev/null
+      cat "${f}.txt" >> "${TMP}/result.txt"
+    fi
+  done
+
   TEXT=`cat "${TMP}/result.txt"`
   TOOL="ocr"
 
@@ -174,6 +184,6 @@ SCAPED_TEXT=$(json_escape "${TEXT}")
 echo "{ \"text\": ${SCAPED_TEXT}, \"mimetype\": \"${MIMETYPE}\", \"utility\": \"${TOOL}\", \"pages\": ${PAGES} }"
 
 # delete the tmp files (and return nothing)
-rm -fr $TMP &> /dev/null;
+#rm -fr $TMP &> /dev/null;
 
 exit 0

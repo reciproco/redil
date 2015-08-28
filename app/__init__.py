@@ -11,7 +11,7 @@ db = SQLAlchemy()
 def create_app():
     app = Flask(__name__)
     app.logger.addHandler(logging.StreamHandler(sys.stdout))
-    app.logger.setLevel(logging.ERROR)
+    app.logger.setLevel(logging.DEBUG)
     app.config.from_object(os.environ['APP_SETTINGS'])
     print(os.environ['APP_SETTINGS'])
     db.init_app(app)

@@ -2,6 +2,8 @@
 from app import db
 from flask import Blueprint, jsonify, make_response, render_template, safe_join, request
 import io
+import tempfile
+from app import ocr
 
 mod_web = Blueprint('web',__name__ ,url_prefix='/')
 
@@ -21,20 +23,17 @@ def index():
 @mod_web.route('upload', methods=['GET', 'POST'])
 def upload():
 
+    text = ''
+
     if request.method == 'POST':
 
-        b = io.BytesIO()
-
-        print(request.form)
-        print(dir(request.files['file0']))
-        b.write(request.files['file0'].stream.read())
-        b.seek(0)
+        with tempfile.NamedTemporaryFile() as temp:
+            print(dir(request.files['file0']))
+            temp.write(request.files['file0'].stream.read())
+            temp.flush()
+            data = ocr.execute(temp.name)
+            text = data['text']
+            print(text)
+            return make_response(jsonify({'texto': text}))
         
-        view = b.read(100)
-
-        print(view[:30])
-
-        
-#        filename =  safe_join(app.config["APPLICATION_ROOT"], path)
-
-    return render_template('upload.html')
+    return render_template('upload.html', texto = text)

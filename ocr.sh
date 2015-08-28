@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Holds the help information displayed when the -h flag is added
 usage="
@@ -38,6 +38,10 @@ RETURN
         pages: <NUMBER_OF_PAGES>
     }
 "
+
+function json_escape(){
+  echo -n "$1" | python -c 'import json,sys; print(json.dumps(sys.stdin.read()))'
+}
 
 # Settings and default options
 FILE="$1"
@@ -79,7 +83,7 @@ elif [ $MIMETYPE == 'application/pdf' ]; then
 
     pdftotext "$FILE" "${TMP}.txt"
 #    TEXT=`iconv -c -f utf-8 -t ascii "${TMP}.txt"`
-    TEXT="${TMP}.txt"
+    TEXT=`cat "${TMP}.txt"`
     #TEXT=`tr -cd "[:print:]" "${TMP}.txt"`
     TOOL="pdftotext"
 
@@ -104,7 +108,8 @@ elif [ $MIMETYPE == 'application/pdf' ]; then
 
     #TEXT=`tr -d "[:print:]" "${TMP}/result.txt"`
 #    TEXT=`iconv -c -f utf-8 -t ascii "${TMP}/result.txt"`
-    TEXT="${TMP}/result.txt"
+
+    TEXT=`cat "${TMP}/result.txt"`
     TOOL="ocr"
 
   fi
@@ -113,10 +118,9 @@ elif [ $MIMETYPE == 'application/pdf' ]; then
 elif [[ $MIMETYPE == image/* ]]; then
 
   mkdir "$TMP"
-  echo $FILE
   tesseract -l spa "$FILE" "${TMP}/result.txt" &> /dev/null
 #  TEXT=`iconv -c -f utf-8 -t ascii "${TMP}/result.txt"`
-  TEXT="${TMP}/result.txt"
+  TEXT=`cat "${TMP}/result.txt"`
   TOOL="ocr"
 
 # Use libreoffice to do the conversion
@@ -149,28 +153,27 @@ then
 
   TOOL="convert"
 #  TEXT=`iconv -c -f utf-8 -t ascii "${TMP}/${BASENAME}.txt"` &> /dev/null
-  TEXT="${TMP}/${BASENAME}.txt"
+  TEXT=`cat "${TMP}/${BASENAME}.txt"`
 fi
 
 # Escape for JSON: http://stackoverflow.com/questions/10053678/escaping-characters-in-bash-for-json
-TEXT=${TEXT//\\/\\\\} # \
-TEXT=${TEXT//\//\\\/} # /
-#TEXT=${TEXT//\'/\\\'} # ' (not strictly needed ?)
-TEXT=${TEXT//\"/\\\"} # "
-TEXT=${TEXT//	/\\t} # \t (tab)
-TEXT=${TEXT//
-/\\\n} # \n (newline)
-TEXT=${TEXT//^M/\\\r} # \r (carriage return)
-TEXT=${TEXT//^L/\\\f} # \f (form feed)
-TEXT=${TEXT//^H/\\\b} # \b (backspace)
-TEXT=`sed 's/[\d1-\d31]//g' <<< $TEXT` # Strip out other non-ASCII(?) chars that were causing problems
+#TEXT=${TEXT//\\/\\\\} # \
+#TEXT=${TEXT//\//\\\/} # /
+#TEXT=${TEXT//\"/\\\"} # "
+#TEXT=${TEXT//	/\\t} # \t (tab)
+#TEXT=${TEXT//
+#/\\\n} # \n (newline)
+#TEXT=${TEXT//^M/\\\r} # \r (carriage return)
+#TEXT=${TEXT//^L/\\\f} # \f (form feed)
+#TEXT=${TEXT//^H/\\\b} # \b (backspace)
+#TEXT=`sed 's/[\d1-\d31]//g' <<< $TEXT` # Strip out other non-ASCII(?) chars that were causing problems
+
+SCAPED_TEXT=$(json_escape "${TEXT}")
 
 # return JSON array
-echo "{ \"text\": \"${TEXT}\", \"mimetype\": \"${MIMETYPE}\", \"utility\": \"${TOOL}\", \"pages\": ${PAGES} }"
+echo "{ \"text\": ${SCAPED_TEXT}, \"mimetype\": \"${MIMETYPE}\", \"utility\": \"${TOOL}\", \"pages\": ${PAGES} }"
 
 # delete the tmp files (and return nothing)
-#rm -fr $TMP &> /dev/null;
+rm -fr $TMP &> /dev/null;
 
-
-exit 2
-
+exit 0

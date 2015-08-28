@@ -126,6 +126,10 @@
                 },
                 data: { model: $scope.model, files: $scope.files }
             }).success(function(data, status, headers, config) {
+
+                console.log(data);
+                $scope.texto = data.texto;
+
                 console.log('success');
             }).error(function(data, status, headers, config) {
                 console.log('failed');

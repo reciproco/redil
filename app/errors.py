@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from flask import current_app, Markup, render_template, request, jsonify, make_response
 from werkzeug.exceptions import default_exceptions, HTTPException
 

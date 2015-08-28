@@ -67,6 +67,7 @@
               }
               if (parsedquery.length > 2) {
                 console.log(parsedquery);
+                console.log('Hi');
                 documentsFactory.searchDocuments(parsedquery)
                                 .success(function (response) {
                                     console.log(response);

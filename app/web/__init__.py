@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from app import db
-from flask import Blueprint, jsonify, make_response, render_template, safe_join, request
+from flask import Blueprint, jsonify, make_response, render_template, safe_join, request, current_app
 import io
 import tempfile
 from app import ocr
@@ -33,7 +33,7 @@ def upload():
             temp.flush()
             data = ocr.execute(temp.name)
             text = data['text']
-            print(text)
+            current_app.logger.info(text)
             return make_response(jsonify({'texto': text}))
         
     return render_template('upload.html', texto = text)

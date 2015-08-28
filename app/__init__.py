@@ -23,13 +23,5 @@ def create_app():
     app.register_blueprint(mod_web)
 
     init_errors(app)
-#    app.register_error_handler(404,not_found)
-#    app.register_error_handler(400,bad_request)
 
     return app
-
-#def bad_request(error):
-#    return make_response(jsonify({'error': 'Bad request'}), 400)
-#
-#def not_found(error):
-#    return make_response(jsonify({'error': 'Not found'}), 404)

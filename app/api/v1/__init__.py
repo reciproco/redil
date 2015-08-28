@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from flask import Flask, render_template, request, jsonify, Blueprint,  make_response
+from flask import Flask, render_template, request, jsonify, Blueprint,  make_response, current_app
 from flask.ext.sqlalchemy import SQLAlchemy
 from sqlalchemy import func
 import hashlib
@@ -8,9 +8,12 @@ from app import db
 from app.api.v1.models import Document
 import shlex
 from flask.ext.restful import Api, Resource, reqparse, fields, marshal, abort
+from flask.ext.httpauth import HTTPDigestAuth
 
 mod_apiv1 = Blueprint('apiv1',__name__, url_prefix='/api/v1')
 api = Api(mod_apiv1)
+
+auth = HTTPDigestAuth()
 
 document_fields = {
     'id':  fields.Integer,
@@ -29,6 +32,12 @@ documents_fields = {
     'content_hash': fields.String,
     'uri': fields.Url('.documents')
 }
+
+@auth.get_password
+def get_pw(username):
+    if username in current_app.config['API_USERS']:
+        return current_app.config['API_USERS'].get(username)
+    return None
 
 def highlight(doc, searchs):
     content = ''
@@ -63,6 +72,7 @@ def highlight(doc, searchs):
     return doc
 
 class DocumentAPI(Resource):
+    decorators = [auth.login_required]
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument('name', type = str, location = 'json')
@@ -115,6 +125,7 @@ def build_search_condition(search):
     
 
 class DocumentListAPI(Resource):
+    decorators = [auth.login_required]
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument('name',type = str, required = True,

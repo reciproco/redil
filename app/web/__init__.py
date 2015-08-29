@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import os
 from app import db
 from flask import Blueprint, jsonify, make_response, render_template, safe_join, request, current_app
 import io
@@ -27,13 +28,14 @@ def upload():
 
     if request.method == 'POST':
 
-        with tempfile.NamedTemporaryFile() as temp:
-            print(dir(request.files['file0']))
+        with tempfile.NamedTemporaryFile(suffix=os.path.splitext(request.files['file0'].filename)[1]) as temp:
             temp.write(request.files['file0'].stream.read())
             temp.flush()
             data = ocr.execute(temp.name)
             text = data['text']
-            current_app.logger.info(text)
+            current_app.logger.info(dir(request.files['file0']))
+            current_app.logger.info(request.files['file0'].filename)
+            current_app.logger.info(data)
             return make_response(jsonify({'texto': text}))
         
     return render_template('upload.html', texto = text)

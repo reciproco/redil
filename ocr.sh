@@ -43,6 +43,9 @@ function json_escape(){
   echo -n "$1" | python -c 'import json,sys; print(json.dumps(sys.stdin.read()))'
 }
 
+function base64conv(){
+  echo -n "$1" | base64 -w 0
+}
 # Settings and default options
 FILE="$1"
 DPI=300
@@ -168,12 +171,13 @@ fi
 #TEXT=${TEXT//^H/\\\b} # \b (backspace)
 #TEXT=`sed 's/[\d1-\d31]//g' <<< $TEXT` # Strip out other non-ASCII(?) chars that were causing problems
 
-SCAPED_TEXT=$(json_escape "${TEXT}")
+#SCAPED_TEXT=$(json_escape "${TEXT}")
+SCAPED_TEXT=$(base64conv "${TEXT}")
 
 # return JSON array
-echo "{ \"text\": ${SCAPED_TEXT}, \"mimetype\": \"${MIMETYPE}\", \"utility\": \"${TOOL}\", \"pages\": ${PAGES} }"
+echo "{ \"text\": \"${SCAPED_TEXT}\", \"mimetype\": \"${MIMETYPE}\", \"utility\": \"${TOOL}\", \"pages\": ${PAGES} }"
 
 # delete the tmp files (and return nothing)
-rm -fr $TMP &> /dev/null;
+#rm -fr $TMP &> /dev/null;
 
 exit 0

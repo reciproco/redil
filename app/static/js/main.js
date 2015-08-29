@@ -128,7 +128,7 @@
             }).success(function(data, status, headers, config) {
 
                 console.log(data);
-                $scope.texto = data.texto;
+                $scope.texto = decodeURIComponent(escape(window.atob((data.texto))));
 
                 console.log('success');
             }).error(function(data, status, headers, config) {

@@ -1,8 +1,27 @@
 (function () {
     'use strict';
 
-    var app =   angular.module('RedilApp', ['ngMaterial']);
+    var app =   angular.module('RedilApp', ['ngMaterial','ngRoute']);
 
+    app.config(['$routeProvider', function($routeProvider) {
+        $routeProvider
+
+            .when('/', {
+                templateUrl : 'static/home.html',
+            })
+            .when('/search', {
+                templateUrl : 'static/search.html',
+                controller: 'searchController'
+            })
+            .when('/upload', {
+                templateUrl : 'static/upload.html',
+                controller: 'uploadController'
+            })
+            .otherwise({
+                redirectTo: '/'
+            });
+
+    }]);
 
     app.filter('to_trusted', ['$sce', function($sce){
         return function(text) {
@@ -46,7 +65,7 @@
         return documentFactory;
     }]);
 
-    app.controller('RedilController',['$scope', '$log', 'documentsFactory', function($scope, $log, documentsFactory) {
+    app.controller('searchController',['$scope', '$log', 'documentsFactory', function($scope, $log, documentsFactory) {
         $scope.results = []
         $scope.searching = false;
 
@@ -93,7 +112,7 @@
         };
     }]);
 
-    app.controller('Ctrl',['$scope', '$http','$log', function($scope, $http, $log) {
+    app.controller('uploadController',['$scope', '$http','$log', function($scope, $http, $log) {
         $scope.model = {
             name: "",
             url: ""
@@ -134,6 +153,25 @@
             }).error(function(data, status, headers, config) {
                 console.log('failed');
             });
+        };
+    }]);
+
+    app.controller('toolbarController',['$scope', '$http','$log','$mdDialog', function($scope, $http, $log, $mdDialog) {
+
+        var originatorEv;
+
+        $scope.menuitems = [ 'Search', 'Upload'];
+        $scope.openMenu = function($mdOpenMenu, ev) {
+            originatorEv = ev;
+            $mdOpenMenu(ev);
+        };
+        $scope.announceClick = function(index) {
+            $mdDialog.show(
+                $mdDialog.alert()
+                    .title('You clicked!')
+                    .content('You clicked the menu item at index ' + index)
+                    .ok('Nice')
+            );
         };
     }]);
 }());

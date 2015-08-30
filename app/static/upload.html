@@ -19,6 +19,7 @@
       </md-button>
       <input id="file-input" type="file" file-upload multiple/>
       <md-button data-ng-click="save()" class="md-raised">send</md-button>
+      <md-progress-circular md-mode="indeterminate" md-diameter="16"  ng-show="searching"></md-progress-circular>
  </div>
       <ul>
           <li ng-repeat="file in files">{{file.name}} (selected)</li>

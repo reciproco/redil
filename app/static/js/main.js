@@ -127,6 +127,8 @@
         });
 
         $scope.save = function() {
+            $scope.searching = true;
+
             $http({
                 method: 'POST',
                 url: '/upload',
@@ -147,10 +149,12 @@
             }).success(function(data, status, headers, config) {
 
                 console.log(data);
+                $scope.searching = false;
                 $scope.texto = decodeURIComponent(escape(window.atob((data.texto))));
 
                 console.log('success');
             }).error(function(data, status, headers, config) {
+                $scope.searching = false;
                 console.log('failed');
             });
         };

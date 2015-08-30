@@ -1,0 +1,32 @@
+    <div layout="row" layout-padding class="redilSearchDocuments">
+      <div flex="10"></div>
+       <div flex>
+        <md-card data-ng-controller="searchController">
+          <md-card-content>
+            <md-content class="md-padding">
+              <form role="form" data-ng-submit="searchDocuments()">
+                 <md-input-container>
+                   <md-icon md-svg-src="static/img/icons/ic_search_24px.svg" class="search">search</md-icon>
+                   <input data-ng-model-options="{ debounce : 400 }" data-ng-change="searchDocuments()" data-ng-model="input_url" ng-required="true" placeholder=" Search words">
+                 </md-input-container>
+              </form>
+            </md-content>
+            <md-content ng-show="results">
+              <md-list>
+                <md-progress-circular md-mode="indeterminate" md-diameter="16"  ng-show="searching"></md-progress-circular><md-subheader>Results</md-subheader>
+                <md-list-item class="md-2-line" data-ng-repeat="data in results">
+                  <div class="md-list-item-text">
+                    <h4 data-ng-bind-html="data.name | to_trusted"></h4> 
+                    <p data-ng-bind-html="data.content | to_trusted"></p>
+                  </div>
+                  <md-divider></md-divider>
+                </md-list-item>
+              </md-list> 
+            </md-content>
+          </md-card-content> 
+        </md-card> 
+        </div>
+      <div flex="10"></div>
+  </div>
+ </body>
+</html>

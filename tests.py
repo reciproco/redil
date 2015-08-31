@@ -45,7 +45,8 @@ class RedilTestCase(unittest.TestCase):
 
     def test_api_create_document(self):
         headers = [('Content-Type', 'application/json')]
-        data = {'name': 'Jesse', 'url' : 'http://localhost/testcase', 'content' : 'test case data'}
+        data = {'name': 'Jesse', 'path' : 'http://localhost/testcase', 'content' : 'test case data', 'chash' : 'ertwrewrew',
+                'mime': 'asdasd', 'pages': 9 , 'utility': 'popo'}
         json_data = json.dumps(data)
         json_data_length = len(json_data)
         headers.append(('Content-Length', json_data_length))
@@ -54,10 +55,13 @@ class RedilTestCase(unittest.TestCase):
         self.assertEqual(response.status_code,201)
         self.assertIn('id', json_response['document'])
         self.assertIn('name', json_response['document'])
-        self.assertIn('url', json_response['document'])
+        self.assertIn('path', json_response['document'])
+        self.assertIn('utility', json_response['document'])
+        self.assertIn('mime', json_response['document'])
+        self.assertIn('pages', json_response['document'])
         self.assertIn('uri', json_response['document'])
         self.assertIn('content', json_response['document'])
-        self.assertIn('content_hash', json_response['document'])
+        self.assertIn('chash', json_response['document'])
         db.session.flush()
 
     def test_api_delete_document(self):

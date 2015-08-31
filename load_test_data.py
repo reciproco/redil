@@ -6,13 +6,16 @@ from unidecode import unidecode
 conn = psycopg2.connect(os.getenv('DATABASE_URL'))
 cur = conn.cursor()
 
-with open('/home/sistemas/datos/1.txt') as f:
+with open('/home/jsegura/1.txt') as f:
  
     name = 'despertar_hombre.txt'
-    url = 'http://sdsfdfdfs.gfd'
+    path = 'http://sdsfdfdfs.gfd'
+    mime = 'plain/text'
+    utility = 'load_test'
+    pages = 3
     content = unidecode(f.read().replace("'",'').replace('"','')).casefold()
-    content_hash = 'teyeduedgwuedguwgd'
-    cur.execute("INSERT INTO documents (name,content,url,content_hash) VALUES ('{}','{}','{}','{}')".format(name,content,url,content_hash));
+    chash = 'teyeduedgwuedguwgd'
+    cur.execute("INSERT INTO documents (name,path,mime,utility,pages,content,chash) VALUES ('{}','{}','{}','{}','{}','{}','{}')".format(name,path,mime,utility,pages,content,chash));
 #    cur.execute("INSERT INTO test  VALUES ('{}')".format(i.strip()));
 
 conn.commit()

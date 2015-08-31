@@ -5,8 +5,13 @@ import os
 import sys
 import logging
 from app.errors import init_errors
+from rq import Queue
+from rq.job import Job
+from worker import conn
+
 
 db = SQLAlchemy()
+q = Queue(connection=conn)
 
 def create_app():
     app = Flask(__name__)
@@ -21,6 +26,8 @@ def create_app():
 
     from app.web import mod_web
     app.register_blueprint(mod_web)
+
+
 
     init_errors(app)
 

@@ -21,12 +21,25 @@ def method_not_allowed(error):
 def index():
     return render_template('index.html')
 
+
+def extract_text(fileobj):
+   with tempfile.NamedTemporaryFile(suffix=os.path.splitext(fileobj.filename)[1]) as temp:
+        temp.write(fileobj.stream.read())
+        temp.flush()
+        data = ocr.execute(temp.name)
+        text = data['text']
+        current_app.logger.info(dir(request.files['file0']))
+        current_app.logger.info(request.files['file0'].filename)
+        current_app.logger.info(data)
+   return text
+
 @mod_web.route('upload', methods=['GET', 'POST'])
 def upload():
 
     text = ''
 
     if request.method == 'POST':
+
 
         with tempfile.NamedTemporaryFile(suffix=os.path.splitext(request.files['file0'].filename)[1]) as temp:
             temp.write(request.files['file0'].stream.read())

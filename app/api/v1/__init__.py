@@ -16,20 +16,26 @@ api = Api(mod_apiv1)
 auth = HTTPDigestAuth()
 
 document_fields = {
-    'id':  fields.Integer,
-    'name': fields.String,
-    'url': fields.String,
+    'id':     fields.Integer,
+    'name':   fields.String,
+    'path':   fields.String,
+    'pages':  fields.Integer,
+    'mime':   fields.String,
+    'utility': fields.String,
     'content': fields.String,
-    'content_hash': fields.String,
+    'chash': fields.String,
     'uri': fields.Url('.document')
 }
 
 documents_fields = {
     'id':  fields.Integer,
     'name': fields.String,
-    'url': fields.String,
+    'path':   fields.String,
+    'pages':  fields.Integer,
+    'mime':   fields.String,
+    'utility': fields.String,
     'content': fields.String,
-    'content_hash': fields.String,
+    'chash': fields.String,
     'uri': fields.Url('.documents')
 }
 
@@ -72,12 +78,16 @@ def highlight(doc, searchs):
     return doc
 
 class DocumentAPI(Resource):
-    decorators = [auth.login_required]
+#    decorators = [auth.login_required]
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument('name', type = str, location = 'json')
-        self.reqparse.add_argument('url', type = str,  location = 'json')
+        self.reqparse.add_argument('path', type = str,  location = 'json')
         self.reqparse.add_argument('content', type = str, location = 'json')
+        self.reqparse.add_argument('chash', type = str, location = 'json')
+        self.reqparse.add_argument('utility', type = str, location = 'json')
+        self.reqparse.add_argument('mime', type = str, location = 'json')
+        self.reqparse.add_argument('pages', type = int, location = 'json')
 
         super(DocumentAPI, self).__init__()
 
@@ -97,7 +107,11 @@ class DocumentAPI(Resource):
      
         doc.content = args['content']
         doc.name = args['name']
-        doc.url = args['url']
+        doc.path = args['path']
+        doc.chash = args['chash']
+        doc.utility = args['utility']
+        doc.mime = args['mime']
+        doc.pages = args['pages']
         doc.content_hash = hashlib.sha1(args['content'].encode('utf-8')).hexdigest()
         db.session.commit()
 
@@ -125,15 +139,23 @@ def build_search_condition(search):
     
 
 class DocumentListAPI(Resource):
-    decorators = [auth.login_required]
+#    decorators = [auth.login_required]
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument('name',type = str, required = True,
              help = 'No document name provided', location = 'json')
-        self.reqparse.add_argument('url',type = str, required = True,
+        self.reqparse.add_argument('path',type = str, required = True,
              help = 'No document url provided', location = 'json')
         self.reqparse.add_argument('content',type = str, required = True,
              help = 'No document content provided', location = 'json')
+        self.reqparse.add_argument('chash',type = str, required = True,
+             help = 'No document hash  provided', location = 'json')
+        self.reqparse.add_argument('pages',type = int, required = True,
+             help = 'No pages provided', location = 'json')
+        self.reqparse.add_argument('mime',type = str, required = True,
+             help = 'No mime provided', location = 'json')
+        self.reqparse.add_argument('utility',type = str, required = True,
+             help = 'No utility provided', location = 'json')
 
         super(DocumentListAPI, self).__init__()
 
@@ -153,7 +175,8 @@ class DocumentListAPI(Resource):
 
     def put(self):
         args = self.reqparse.parse_args()
-        doc = Document(args['name'],args['url'],args['content'], hashlib.sha1(args['content'].encode('utf-8')).hexdigest())
+        doc = Document(args['name'],args['path'],args['mime'],args['utility'],args['pages'],args['content'],args['chash'])
+        #doc = Document(args['name'],args['path'],args['mime'],args['utility'],args['pages'],args['content'],args['chash'] hashlib.sha1(args['content'].encode('utf-8')).hexdigest())
         db.session.add(doc)
         db.session.commit()
 

@@ -33,7 +33,7 @@ def execute(input_filename):
     output = tempfile.NamedTemporaryFile()
 
     try:
-        proc = subprocess.Popen(command, stderr=subprocess.STDOUT, stdout=output)
+        proc = subprocess.Popen(command, stderr=subprocess.PIPE, stdout=output)
     except OSError as exception:
         if exception.errno == errno.ENOENT:
             raise OCRError('ocr.sh not found at ')
@@ -45,6 +45,7 @@ def execute(input_filename):
             error_text = proc.stderr.read()
             raise(OCRError(error_text))
 
+        output.seek(0)
         data = json.loads(output.read().decode())
 
         output.close()

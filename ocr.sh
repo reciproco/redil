@@ -71,7 +71,7 @@ done
 # when the file contained spaces. From http://askubuntu.com/questions/103594/how-do-i-determine-the-mime-type-of-a-file
 MIMETYPE=`xdg-mime query filetype "$FILE"`
 TOOL="none"
-TEXT=`cat "${FILE}"`
+#TEXT=`cat "${FILE}"` # Unknow binary mime types can produce errors
 
 # PDF File, check if it has embedded fonts (if it is not OCRed)
 if [ $MIMETYPE == 'text/plain' ]; then
@@ -130,7 +130,7 @@ elif [[ $MIMETYPE == image/* ]]; then
 
 # Use libreoffice to do the conversion
 elif
-  #[ $MIMETYPE == 'application/msword' ] ||
+  [ $MIMETYPE == 'application/msword' ] ||
   [ $MIMETYPE == 'application/vnd.ms-word' ] ||
   [ $MIMETYPE == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ] ||
   [ $MIMETYPE == 'application/vnd.oasis.opendocument.text' ] ||

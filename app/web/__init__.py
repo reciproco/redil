@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 from app import db
+import tempfile
 from flask import Blueprint, jsonify, make_response, render_template, safe_join, request, current_app
 from app import ocr
 from app.api.v1.models import Document
@@ -43,25 +44,15 @@ def upload():
 
     if request.method == 'POST':
         filename = request.files['file0'].filename
-        raw = request.files['file0'].stream.read()
 
-        job = q.enqueue_call(
-            func=ocr.extract_text, args=(filename,raw,), result_ttl=5000
-            #func=ocr.extract_text, args=(request.files['file0'],), result_ttl=5000
-        )
-        print(job.get_id())
-        text = job.get_id()
+        with tempfile.NamedTemporaryFile(suffix=os.path.splitext(filename)[1], delete=False) as temp:
+            temp.write(request.files['file0'].stream.read())
+            temp.flush
 
-    #    with tempfile.NamedTemporaryFile(suffix=os.path.splitext(request.files['file0'].filename)[1]) as temp:
-    #        temp.write(request.files['file0'].stream.read())
-    #        temp.flush()
-    #        data = ocr.execute(temp.name)
-    #        text = data['text']
-    #        current_app.logger.info(dir(request.files['file0']))
-    #        current_app.logger.info(request.files['file0'].filename)
-    #        current_app.logger.info(data)
-    #        return make_response(jsonify({'texto': text}))
+            job = q.enqueue_call(
+                func=ocr.extract_text, args=(filename,temp.name,), result_ttl=5000
+            )
+            print(job.get_id())
+            text = job.get_id()
 
-        
-        
     return make_response(jsonify({'texto': text}))

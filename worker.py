@@ -3,8 +3,7 @@ import os
 import redis
 from rq import Worker, Queue, Connection
 
-
-listen = ['default']
+listen = [os.getenv('REDIL_QUEUE','default')]
 
 redis_url = os.getenv('REDISTOGO_URL', 'redis://localhost:6379')
 

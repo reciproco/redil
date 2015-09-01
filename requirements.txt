@@ -16,7 +16,6 @@ aniso8601==1.0.0
 click==5.1
 coverage==3.7.1
 decorator==4.0.2
-fake-factory==0.5.2
 gunicorn==19.3.0
 itsdangerous==0.24
 psycopg2==2.6.1

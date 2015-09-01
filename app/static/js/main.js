@@ -121,7 +121,6 @@
         $scope.files = [];
 
         $scope.askForResults = function askForResults(jobID) {
-            $scope.searching = true;
 
             var timeout = "";
 
@@ -154,6 +153,7 @@
         });
 
         $scope.save = function() {
+            $scope.searching = true;
 
             $http({
                 method: 'POST',

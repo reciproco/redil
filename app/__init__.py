@@ -11,7 +11,7 @@ from worker import conn
 
 
 db = SQLAlchemy()
-q = Queue(connection=conn)
+q = Queue(os.getenv('REDIL_QUEUE','default'),connection=conn)
 
 def create_app():
     app = Flask(__name__)

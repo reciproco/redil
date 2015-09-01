@@ -50,6 +50,7 @@ def upload():
             #func=ocr.extract_text, args=(request.files['file0'],), result_ttl=5000
         )
         print(job.get_id())
+        text = job.get_id()
 
     #    with tempfile.NamedTemporaryFile(suffix=os.path.splitext(request.files['file0'].filename)[1]) as temp:
     #        temp.write(request.files['file0'].stream.read())

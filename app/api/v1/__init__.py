@@ -15,35 +15,11 @@ api = Api(mod_apiv1)
 
 auth = HTTPDigestAuth()
 
-document_fields = {
-    'id':     fields.Integer,
-    'name':   fields.String,
-    'path':   fields.String,
-    'pages':  fields.Integer,
-    'mime':   fields.String,
-    'utility': fields.String,
-    'content': fields.String,
-    'chash': fields.String,
-    'uri': fields.Url('.document')
-}
-
-documents_fields = {
-    'id':  fields.Integer,
-    'name': fields.String,
-    'path':   fields.String,
-    'pages':  fields.Integer,
-    'mime':   fields.String,
-    'utility': fields.String,
-    'content': fields.String,
-    'chash': fields.String,
-    'uri': fields.Url('.documents')
-}
-
-@auth.get_password
-def get_pw(username):
-    if username in current_app.config['API_USERS']:
-        return current_app.config['API_USERS'].get(username)
-    return None
+#@auth.get_password
+#def get_pw(username):
+#    if username in current_app.config['API_USERS']:
+#        return current_app.config['API_USERS'].get(username)
+#    return None
 
 def highlight(doc, searchs):
     content = ''
@@ -84,7 +60,6 @@ class DocumentAPI(Resource):
         self.reqparse.add_argument('name', type = str, location = 'json')
         self.reqparse.add_argument('path', type = str,  location = 'json')
         self.reqparse.add_argument('content', type = str, location = 'json')
-        self.reqparse.add_argument('chash', type = str, location = 'json')
         self.reqparse.add_argument('utility', type = str, location = 'json')
         self.reqparse.add_argument('mime', type = str, location = 'json')
         self.reqparse.add_argument('pages', type = int, location = 'json')
@@ -96,7 +71,7 @@ class DocumentAPI(Resource):
         if not doc: 
             abort(404, message='Document id {} not found.'.format(id))
 
-        return {'documents': [marshal(doc, document_fields)]}
+        return {'documents': [marshal(doc, doc.marshall_fields('.document'))]}
 
     def put(self, id):
         doc = Document.query.get(id)    
@@ -105,17 +80,16 @@ class DocumentAPI(Resource):
 
         args = self.reqparse.parse_args()
      
-        doc.content = args['content']
+        doc.content = unidecode(args['content'].encode('utf-8')).casefold()
         doc.name = args['name']
         doc.path = args['path']
-        doc.chash = args['chash']
         doc.utility = args['utility']
         doc.mime = args['mime']
         doc.pages = args['pages']
-        doc.content_hash = hashlib.sha1(args['content'].encode('utf-8')).hexdigest()
+#        doc.content_hash = hashlib.sha1(args['content'].encode('utf-8')).hexdigest()
         db.session.commit()
 
-        return { 'document' : [marshal(doc, document_fields)]}
+        return { 'document' : [marshal(doc,  doc.marshall_fields('.document'))]}
 
     def delete(self, id):
         doc = Document.query.get(id)
@@ -145,12 +119,10 @@ class DocumentListAPI(Resource):
         self.reqparse.add_argument('name',type = str, required = True,
              help = 'No document name provided', location = 'json')
         self.reqparse.add_argument('path',type = str, required = True,
-             help = 'No document url provided', location = 'json')
+             help = 'No document path provided', location = 'json')
         self.reqparse.add_argument('content',type = str, required = True,
              help = 'No document content provided', location = 'json')
-        self.reqparse.add_argument('chash',type = str, required = True,
-             help = 'No document hash  provided', location = 'json')
-        self.reqparse.add_argument('pages',type = int, required = True,
+        self.reqparse.add_argument('pages',type = str, required = True,
              help = 'No pages provided', location = 'json')
         self.reqparse.add_argument('mime',type = str, required = True,
              help = 'No mime provided', location = 'json')
@@ -167,20 +139,20 @@ class DocumentListAPI(Resource):
             searchs = shlex.split(normalize)
             docs = Document.query.filter(eval(build_search_condition(searchs))).all()       
 
-            return { 'documents' : [marshal(highlight(doc, searchs), documents_fields) for doc in docs]}
+            return { 'documents' : [marshal(highlight(doc, searchs),  doc.marshall_fields('.documents')) for doc in docs]}
             
         docs = Document.query.all()
 
-        return { 'documents' : [marshal(doc, documents_fields) for doc in docs]}
+        return { 'documents' : [marshal(doc,  doc.marshall_fields('.documents')) for doc in docs]}
 
     def put(self):
         args = self.reqparse.parse_args()
-        doc = Document(args['name'],args['path'],args['mime'],args['utility'],args['pages'],args['content'],args['chash'])
+        doc = Document(args['name'],args['path'],args['mime'],args['utility'],args['pages'],args['content'])
         #doc = Document(args['name'],args['path'],args['mime'],args['utility'],args['pages'],args['content'],args['chash'] hashlib.sha1(args['content'].encode('utf-8')).hexdigest())
         db.session.add(doc)
         db.session.commit()
 
-        return { 'document' : marshal(doc, documents_fields)}, 201
+        return { 'document' : marshal(doc,  doc.marshall_fields('.documents'))}, 201
 
 api.add_resource(DocumentAPI, '/documents/<int:id>', endpoint = 'document')
 api.add_resource(DocumentListAPI, '/documents', endpoint = 'documents')

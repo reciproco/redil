@@ -3,6 +3,30 @@ from app.exceptions import OCRError
 import errno
 import subprocess
 import json
+import tempfile
+import os
+from app.api.v1.models import Document
+from app import db
+from app import create_app
+
+def extract_text(filename, stream):
+
+   myapp = create_app()
+
+   with myapp.app_context():
+     with tempfile.NamedTemporaryFile(suffix=os.path.splitext(filename)[1]) as temp:
+        raw = stream.read()
+        temp.write(raw)
+        temp.flush()
+        data = execute(temp.name)
+
+        doc = Document(filename,filename,data['mimetype'],data['utility'], data['pages'], raw.decode('utf-8')) 
+        db.session.add(doc)
+        db.session.commit()
+
+        return doc.id
+
+   return 0
 
 def execute(input_filename):
 

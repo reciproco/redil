@@ -3,29 +3,29 @@
    <div ng-controller="uploadController" flex>
     <md-card>
      <md-card-content>
-<div layout="row" layout-padding>
-      <label class="md-title">Select files</label>
-</div>
-<div layout="row" layout-padding>
-      <span class="md-subhead">Choose a document, click on send button and Redil will extract the text for you. </span>
-</div>
-<div layout="row" layout-padding>
-<div layout="row" layout-padding>
-      <md-progress-circular md-mode="indeterminate" md-diameter="16"  ng-show="searching"></md-progress-circular>
-</div>
-</div>
-<div layout="row" layout-padding>
-      <md-button choose-file-button="file-input" aria-label="xxx" class="md-fab md-mini md-primary" ng-click="">
-        <md-icon md-svg-icon="/static/img/icons/ic_file_upload_24px.svg"></md-icon>
-      </md-button>
-      <input id="file-input" type="file" file-upload multiple/>
-      <md-button data-ng-click="save()" class="md-raised">send</md-button>
- </div>
-      <ul>
+       <div layout="row" layout-padding>
+         <label class="md-title">Select files</label>
+       </div>
+       <div layout="row" layout-padding>
+         <span class="md-subhead">Choose a document, click on send button and Redil will extract the text for you. </span>
+       </div>
+       <div layout="row" layout-padding>
+         <div layout="row" layout-padding>
+           <md-progress-circular md-mode="indeterminate" md-diameter="16"  ng-show="searching"></md-progress-circular>
+         </div>
+       </div>
+       <div layout="row" layout-padding>
+         <md-button choose-file-button="file-input" aria-label="xxx" class="md-fab md-mini md-primary" ng-click="">
+           <md-icon md-svg-icon="/static/img/icons/ic_file_upload_24px.svg"></md-icon>
+         </md-button>
+         <input id="file-input" type="file" file-upload multiple/>
+         <md-button data-ng-click="save()" class="md-raised">send</md-button>
+       </div>
+       <ul>
           <li ng-repeat="file in files">{{file.name}} (selected)</li>
-      </ul>
-      <span>{{ texto }}</span>
-   </md-card-content>
+       </ul>
+       <span>{{ texto }}</span>
+    </md-card-content>
   </md-card>
  </div>
  <div flex="10"></div>

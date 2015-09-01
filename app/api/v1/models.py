@@ -10,7 +10,7 @@ class Document(db.Model):
     id             = db.Column(db.Integer, primary_key=True)
     name           = db.Column(db.Unicode(255), nullable=False)
     path           = db.Column(db.Unicode(255), nullable=False)
-    mime           = db.Column(db.Unicode(32), nullable=False)
+    mime           = db.Column(db.Unicode(128), nullable=False)
     utility        = db.Column(db.Unicode(32), nullable=False)
     pages          = db.Column(db.Integer, nullable=False)
     content        = db.Column(db.UnicodeText, nullable=False)

@@ -27,8 +27,6 @@ def create_app():
     from app.web import mod_web
     app.register_blueprint(mod_web)
 
-
-
     init_errors(app)
 
     return app

@@ -112,13 +112,40 @@
         };
     }]);
 
-    app.controller('uploadController',['$scope', '$http','$log', function($scope, $http, $log) {
+    app.controller('uploadController',['$scope', '$http','$log', '$timeout', function($scope, $http, $log, $timeout) {
         $scope.model = {
             name: "",
             url: ""
         };
 
         $scope.files = [];
+
+        $scope.askForResults = function askForResults(jobID) {
+            $scope.searching = true;
+
+            var timeout = "";
+
+            var poller = function() {
+                // fire another request
+                $http.get('/results/'+jobID).
+                    success(function(data, status, headers, config) {
+                       if(status === 202) {
+                           console.log(data, status);
+                       } else if (status === 200){
+                           console.log(data);
+                           $scope.texto = data;
+                           $timeout.cancel(timeout);
+                           $scope.searching = false;
+                           return false;
+                       }
+                       // continue to call the poller() function every 2 seconds
+                       // until the timeout is cancelled
+                       timeout = $timeout(poller, 2000);
+                    });
+                };
+            poller();
+         };
+
 
         $scope.$on("fileSelected", function( event, args) {
             $scope.$apply(function () {
@@ -127,7 +154,6 @@
         });
 
         $scope.save = function() {
-            $scope.searching = true;
 
             $http({
                 method: 'POST',
@@ -150,11 +176,12 @@
 
                 console.log(data);
                 $scope.searching = false;
-                $scope.texto = decodeURIComponent(escape(window.atob((data.texto))));
+                //$scope.texto = decodeURIComponent(escape(window.atob((data.texto))));
+                //$scope.texto = data.texto;
+                $scope.askForResults(data.texto);
 
                 console.log('success');
             }).error(function(data, status, headers, config) {
-                $scope.searching = false;
                 console.log('failed');
             });
         };

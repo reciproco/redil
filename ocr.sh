@@ -152,7 +152,7 @@ then
       i=100
     else
       i=$(( $i + 1 ))
-      soffice "-env:UserInstallation=file://${TMP}" --headless --convert-to txt:Text (encoded):UTF8 --outdir "$TMP" "$FILE" &> /dev/null
+      soffice "-env:UserInstallation=file://${TMP}" --headless --convert-to txt:Text:UTF8 --outdir "$TMP" "$FILE" &> /dev/null
     fi
   done
 

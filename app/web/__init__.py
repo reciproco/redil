@@ -43,10 +43,10 @@ def upload():
 
     if request.method == 'POST':
         filename = request.files['file0'].filename
-        stream = request.files['file0'].stream
+        raw = request.files['file0'].stream.read()
 
         job = q.enqueue_call(
-            func=ocr.extract_text, args=(filename,stream,), result_ttl=5000
+            func=ocr.extract_text, args=(filename,raw,), result_ttl=5000
             #func=ocr.extract_text, args=(request.files['file0'],), result_ttl=5000
         )
         print(job.get_id())

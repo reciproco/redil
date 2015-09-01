@@ -10,13 +10,12 @@ from app import db
 from app import create_app
 import base64
 
-def extract_text(filename, stream):
+def extract_text(filename, raw):
 
    myapp = create_app()
 
    with myapp.app_context():
      with tempfile.NamedTemporaryFile(suffix=os.path.splitext(filename)[1]) as temp:
-        raw = stream.read()
         temp.write(raw)
         temp.flush()
         data = execute(temp.name)

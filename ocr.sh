@@ -71,6 +71,7 @@ done
 # when the file contained spaces. From http://askubuntu.com/questions/103594/how-do-i-determine-the-mime-type-of-a-file
 MIMETYPE=`xdg-mime query filetype "$FILE"`
 TOOL="none"
+TEXT=`cat "${FILE}"`
 
 # PDF File, check if it has embedded fonts (if it is not OCRed)
 if [ $MIMETYPE == 'text/plain' ]; then

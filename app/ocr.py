@@ -4,6 +4,7 @@ import errno
 import subprocess
 import json
 import os
+import tempfile
 from app.api.v1.models import Document
 from app import db
 from app import create_app
@@ -29,8 +30,10 @@ def execute(input_filename):
 
     command = ["ocr", input_filename]
 
+    output = tempfile.NamedTemporaryFile()
+
     try:
-        proc = subprocess.Popen(command, close_fds=False, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
+        proc = subprocess.Popen(command, stderr=subprocess.STDOUT, stdout=output)
     except OSError as exception:
         if exception.errno == errno.ENOENT:
             raise OCRError('ocr.sh not found at ')
@@ -42,7 +45,9 @@ def execute(input_filename):
             error_text = proc.stderr.read()
             raise(OCRError(error_text))
 
-        data = json.loads(proc.stdout.read().decode())
+        data = json.loads(output.read().decode())
+
+        output.close()
 
         return data
 

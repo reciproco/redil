@@ -20,7 +20,7 @@ def extract_text(filename, stream):
         temp.flush()
         data = execute(temp.name)
 
-        doc = Document(filename,filename,data['mimetype'],data['utility'], data['pages'], raw.decode('utf-8')) 
+        doc = Document(filename,filename,data['mimetype'],data['utility'], data['pages'], data['text'].decode('utf-8')) 
         db.session.add(doc)
         db.session.commit()
 

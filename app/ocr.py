@@ -8,6 +8,7 @@ import os
 from app.api.v1.models import Document
 from app import db
 from app import create_app
+import base64
 
 def extract_text(filename, stream):
 
@@ -20,7 +21,7 @@ def extract_text(filename, stream):
         temp.flush()
         data = execute(temp.name)
 
-        doc = Document(filename,filename,data['mimetype'],data['utility'], data['pages'], data['text'].decode('utf-8')) 
+        doc = Document(filename,filename,data['mimetype'],data['utility'], data['pages'], base64.b64decode(data['text'])) 
         db.session.add(doc)
         db.session.commit()
 

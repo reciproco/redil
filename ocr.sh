@@ -74,7 +74,7 @@ TOOL="none"
 #TEXT=`cat "${FILE}"` # Unknow binary mime types can produce errors
 
 # PDF File, check if it has embedded fonts (if it is not OCRed)
-if [ $MIMETYPE == 'text/plain' ]; then
+if [[ $MIMETYPE == text/* ]]; then
 
   TEXT=`cat "${FILE}"`
   TOOL="text"

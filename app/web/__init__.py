@@ -32,27 +32,28 @@ def get_results(job_key):
 
     if job.is_finished:
         doc = Document.query.filter_by(id=job.result).first()
-        print(doc)
-        return jsonify(doc.serialize)
+
+#        result = { 'id' : doc.id, 'name' : doc.name }
+        return jsonify({ 'id' : doc.id, 'name' : doc.name })
     else:
-        return "Nay!", 202
+        return make_response(jsonify({ 'id' : '', 'name' : '' }),202)
 
 @mod_web.route('upload', methods=['GET', 'POST'])
 def upload():
 
-    text = ''
+    job_ids = []
 
     if request.method == 'POST':
-        filename = request.files['file0'].filename
 
-        with tempfile.NamedTemporaryFile(suffix=os.path.splitext(filename)[1], delete=False) as temp:
-            temp.write(request.files['file0'].stream.read())
-            temp.flush
+        for key in request.files:
+            with tempfile.NamedTemporaryFile(suffix=os.path.splitext(request.files[key].filename)[1], delete=False) as temp:
+                temp.write(request.files[key].stream.read())
+                temp.flush
 
-            job = q.enqueue_call(
-                func=ocr.extract_text, args=(filename,temp.name,), result_ttl=5000
-            )
-            print(job.get_id())
-            text = job.get_id()
+                job = q.enqueue_call(
+                    func=ocr.extract_text, args=(request.files[key].filename,temp.name,), result_ttl=5000
+                )
+                print(job.get_id())
+                job_ids.append(job.get_id())
 
-    return make_response(jsonify({'texto': text}))
+    return make_response(jsonify({'job_ids': job_ids}))

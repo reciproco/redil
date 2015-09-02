@@ -5,6 +5,7 @@ redil.controller('uploadController',['$scope', '$http','$log', '$timeout', funct
     };
 
     $scope.files = [];
+    $scope.jobs = [];
 
     $scope.askForResults = function askForResults(jobID) {
 
@@ -17,7 +18,7 @@ redil.controller('uploadController',['$scope', '$http','$log', '$timeout', funct
                           console.log(data, status);
                       } else if (status === 200){
                           console.log(data);
-                          $scope.texto = data;
+                          $scope.jobs.push(data);
                           $timeout.cancel(timeout);
                           $scope.searching = false;
                           return false;
@@ -36,6 +37,7 @@ redil.controller('uploadController',['$scope', '$http','$log', '$timeout', funct
 
     $scope.save = function() {
         $scope.searching = true;
+        $scope.jobs = [];
 
         $http({
             method: 'POST',
@@ -55,7 +57,12 @@ redil.controller('uploadController',['$scope', '$http','$log', '$timeout', funct
             data: { model: $scope.model, files: $scope.files }
         }).success(function(data, status, headers, config) {
             console.log(data);
-            $scope.askForResults(data.texto);
+
+            for (var i=0; i < data.job_ids.length; i++) {
+               $scope.askForResults(data.job_ids[i]);
+            }
+            angular.element(document.querySelector('#file-input')).val(null);
+            $scope.files = [];
             console.log('success');
         }).error(function(data, status, headers, config) {
             $scope.searching = false;

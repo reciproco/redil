@@ -15,14 +15,20 @@
     <!-- Angular Material Javascript now available via Google CDN; version 0.10 used here -->
     <script src="https://ajax.googleapis.com/ajax/libs/angular_material/0.10.0/angular-material.min.js"></script>
 
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/directives.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/filters.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/routes.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/factories.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/searchController.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/uploadController.js') }}"></script>
   </head>
   <body>
   <!-- The top toolbar -->
-    <div ng-controller="toolbarController as ctrl">
+    <div>
     <md-toolbar>
       <div class="md-toolbar-tools">
-          <md-button class="md-icon-button" aria-label="Settings" ng-click="openMenu($mdOpenMenu, $event)">
+          <md-button class="md-icon-button" aria-label="Icono redil">
              <md-icon class="material-icons">filter_drama</md-icon>
           </md-button>
           <h2>

@@ -35,6 +35,8 @@ def get_results(job_key):
 
 #        result = { 'id' : doc.id, 'name' : doc.name }
         return jsonify({ 'id' : doc.id, 'name' : doc.name })
+    elif job.is_failed:
+        return make_response(jsonify({ 'id' : '', 'name' : '' }),203)
     else:
         return make_response(jsonify({ 'id' : '', 'name' : '' }),202)
 

@@ -5,22 +5,46 @@ redil.controller('uploadController',['$scope', '$http','$log', '$timeout', funct
     };
 
     $scope.files = [];
-    $scope.jobs = [];
+    $scope.jobs = []
 
     $scope.askForResults = function askForResults(jobID) {
 
         var timeout = "";
+
+        $scope.jobs.push({id : jobID, state : 'running', doc: { id:'',name:''} });
+
+        console.log('jobID:' + jobID);
+        console.log('scope jobs:');
+        console.log($scope.jobs);
 
         var poller = function() {
             $http.get('/results/'+jobID).
                   success(function(data, status, headers, config) {
                       if(status === 202) {
                           console.log(data, status);
+ //                         $scope.searching = false;
+                      } else if(status === 203) {
+                          console.log(data, status);
+                          console.log(jobID);
+                          $timeout.cancel(timeout);
+                          for (var i = 0; i < $scope.jobs.length; i++) {
+                              if ($scope.jobs[i].id == jobID) {
+                                  $scope.jobs[i].state = 'failed';
+                              } 
+                          }
+                          return false;
                       } else if (status === 200){
                           console.log(data);
-                          $scope.jobs.push(data);
+                          console.log(jobID);
+                          for (var i = 0; i < $scope.jobs.length; i++) {
+                              if ($scope.jobs[i].id == jobID) {
+                                  $scope.jobs[i].doc = data;
+                                  $scope.jobs[i].state = 'finished';
+                              } 
+                          }
+//                          $scope.jobs.push(data);
                           $timeout.cancel(timeout);
-                          $scope.searching = false;
+  //                        $scope.searching = false;
                           return false;
                       }
                       timeout = $timeout(poller, 2000);
@@ -36,7 +60,7 @@ redil.controller('uploadController',['$scope', '$http','$log', '$timeout', funct
     });
 
     $scope.save = function() {
-        $scope.searching = true;
+//        $scope.searching = true;
         $scope.jobs = [];
 
         $http({
@@ -65,7 +89,7 @@ redil.controller('uploadController',['$scope', '$http','$log', '$timeout', funct
             $scope.files = [];
             console.log('success');
         }).error(function(data, status, headers, config) {
-            $scope.searching = false;
+//            $scope.searching = false;
             console.log('failed');
         });
     };

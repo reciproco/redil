@@ -25,7 +25,7 @@
           <li ng-repeat="file in files">{{file.name}} (selected)</li>
        </ul>
        <ul>
-          <li ng-repeat="job in jobs"><a href="/api/v1/documents/{{job.id}}">{{job.name}}</a></li>
+          <li ng-repeat="job in jobs">{{job.id}} <a href="/api/v1/documents/{{job.doc.id}}">{{job.doc.name}}</a> {{job.state}}</li>
        </ul>
     </md-card-content>
   </md-card>

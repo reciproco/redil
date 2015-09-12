@@ -18,7 +18,7 @@ class Document(db.Model):
     __table_args__ = (db.Index('idx_documents_chash','chash',unique = True),) 
 
     def __init__(self,name,path,mime, utility, pages,content):
-        self.name = name
+        self.name = unidecode(name).casefold()
         self.path = path
         self.mime = mime
         self.utility = utility

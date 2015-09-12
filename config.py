@@ -8,6 +8,12 @@ class Config(object):
     SECRET_KEY = os.environ['SECRET_KEY']
     SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
     API_USERS = { os.environ['API_USER'] : os.environ['API_PASSWORD'] }
+#    REDIS_URL = None
+#    REDIS_HOST = 'localhost'
+#    REDIS_PORT = 6379
+#    REDIS_PASSWORD = None
+#    REDIS_DB = 0
+#    RQ_POLL_INTERVAL = 2500  #: Web interface poll period for updates in ms
 
 class ProductionConfig(Config):
     DEBUG = False

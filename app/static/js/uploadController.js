@@ -60,7 +60,7 @@ redil.controller('uploadController',['$scope', '$http','$log', '$timeout', funct
     });
 
     $scope.save = function() {
-//        $scope.searching = true;
+        $scope.searching = true;
         $scope.jobs = [];
 
         $http({
@@ -85,11 +85,12 @@ redil.controller('uploadController',['$scope', '$http','$log', '$timeout', funct
             for (var i=0; i < data.job_ids.length; i++) {
                $scope.askForResults(data.job_ids[i]);
             }
+            $scope.searching = false;
             angular.element(document.querySelector('#file-input')).val(null);
             $scope.files = [];
             console.log('success');
         }).error(function(data, status, headers, config) {
-//            $scope.searching = false;
+            $scope.searching = false;
             console.log('failed');
         });
     };
